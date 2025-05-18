@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Photo Sharing</title>
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #9c89b8;
+            --accent-color: #f0a6ca;
+            --text-color: #2d3436;
+            --bg-color: #faf9f9;
+            --light-color: #efc3e6;
+            --dark-color: #5e548e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            background-image: linear-gradient(135deg, var(--light-color) 0%, var(--bg-color) 50%, var(--light-color) 100%);
+        }
+        
+        /* Fairy lights (crecar) decoration */
+        .fairy-light {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 5px rgba(255, 215, 0, 0.7);
+            z-index: -1;
+            animation: twinkle 2s ease-in-out infinite alternate;
+            transition: all 0.5s ease;
+        }
+        
+        .fairy-light:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 15px 8px rgba(255, 215, 0, 0.9);
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        /* Side decorations */
+        .side-decoration {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            z-index: -1;
+            opacity: 0.7;
+            transition: all 0.4s ease;
+        }
+        
+        .side-decoration:hover {
+            transform: rotate(15deg) scale(1.1);
+            opacity: 0.9;
+        }
+        
+        .left-decoration {
+            left: -30px;
+            top: 20%;
+            transform: rotate(-15deg);
+        }
+        
+        .right-decoration {
+            right: -30px;
+            bottom: 20%;
+            transform: rotate(15deg);
+        }
+        
+        /* Mithai decorations */
+        .mithai {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            z-index: -1;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .mithai:hover {
+            transform: scale(1.2) rotate(15deg);
+            filter: drop-shadow(0 8px 8px rgba(0,0,0,0.3));
+        }
+        
+        .mithai-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .mithai-2 {
+            top: 30%;
+            right: 5%;
+            animation-delay: 0.5s;
+        }
+        
+        .mithai-3 {
+            bottom: 20%;
+            left: 8%;
+            animation-delay: 1s;
+        }
+        
+        .mithai-4 {
+            bottom: 15%;
+            right: 7%;
+            animation-delay: 1.5s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-weight: 600;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        h1:hover {
+            transform: scale(1.05);
+            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .photo-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            border: 5px solid white;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .photo-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .photo {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.5s ease;
+        }
+        
+        .photo:hover {
+            transform: scale(1.02);
+        }
+        
+        .placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #f3f3f3, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .placeholder:hover {
+            background: linear-gradient(45deg, #e0e0e0, #f3f3f3);
+        }
+        
+        /* Ad below photo */
+        .ad-below-photo {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            height: 100px;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            border: 1px dashed #ccc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ad-below-photo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #f0f0f0, #ffffff);
+            color: #666;
+            border-color: var(--accent-color);
+        }
+        
+        .name-section {
+            background: linear-gradient(135deg, var(--secondary-color), var(--dark-color));
+            padding: 25px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .name-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .name-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .name-section h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .name-section h2:hover {
+            transform: scale(1.05);
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group:hover {
+            transform: translateY(-2px);
+        }
+        
+        input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+            outline: none;
+            background-color: rgba(255,255,255,0.9);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        input:hover {
+            background-color: white;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.1);
+        }
+        
+        input:focus {
+            background-color: white;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.1), 0 0 0 2px var(--accent-color);
+        }
+        
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            background-color: #ff8fab;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .share-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            background-color: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        #whatsappShare:hover {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        #facebookShare:hover {
+            background-color: #4267B2;
+            color: white;
+        }
+        
+        /* Second ad space at bottom */
+        .ad-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+        
+        .ad-container:hover {
+            transform: translateY(-3px);
+        }
+        
+        .ad {
+            height: 100px;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            border: 1px dashed #ccc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .ad:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #f0f0f0, #ffffff);
+            color: #666;
+            border-color: var(--accent-color);
+        }
+        
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .music-control:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .music-control:active {
+            transform: scale(0.95);
+        }
+        
+        .music-icon {
+            font-size: 1.8rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover .music-icon {
+            transform: scale(1.2);
+        }
+        
+        .viewer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .viewer-name:hover {
+            transform: scale(1.05);
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .mithai {
+                width: 40px;
+                height: 40px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .name-section h2 {
+                font-size: 1.2rem;
+            }
+            
+            .side-decoration {
+                width: 80px;
+                height: 80px;
+                opacity: 0.5;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fairy lights (crecar) decoration -->
+    <div id="fairyLightsContainer"></div>
+    
+    <!-- Side decorations -->
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Decoration" class="side-decoration left-decoration">
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Decoration" class="side-decoration right-decoration">
+    
+    <!-- Mithai decorations -->
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Mithai" class="mithai mithai-1">
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Mithai" class="mithai mithai-2">
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Mithai" class="mithai mithai-3">
+    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081985.png" alt="Mithai" class="mithai mithai-4">
+    
+    <div class="header">
+        <h1>Special Photo Sharing</h1>
+    </div>
+    
+    <div class="photo-container">
+        <!-- Replace with your actual photo -->
+        <img src="https://via.placeholder.com/500x300?text=Your+Photo+Here" alt="Special Photo" class="photo">
+        <!-- Fallback if image doesn't load -->
+        <div class="placeholder" style="display: none;">
+            Photo could not be loaded
+        </div>
+    </div>
+    
+    <!-- Ad space below photo -->
+    <div class="ad-below-photo">
+        Advertisement Space 1 (Below Photo)
+    </div>
+    
+    <div class="name-section">
+        <h2>Enter Your Name to Share</h2>
+        <div class="input-group">
+            <input type="text" id="nameInput" placeholder="Your beautiful name">
+            <button id="submitName">Submit</button>
+        </div>
+        <div id="viewerDisplay" style="display: none;">
+            <span>Viewer:</span>
+            <div class="viewer-name" id="viewerName"></div>
+        </div>
+        <div class="share-buttons">
+            <a href="#" class="share-btn" id="whatsappShare">
+                <span>WhatsApp</span>
+            </a>
+            <a href="#" class="share-btn" id="facebookShare">
+                <span>Facebook</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Second ad space at bottom -->
+    <div class="ad-container">
+        <div class="ad">Advertisement Space 2</div>
+    </div>
+    
+    <div class="music-control" id="musicControl">
+        <div class="music-icon">♪</div>
+    </div>
+    
+    <!-- Hidden audio element -->
+    <audio id="bgMusic" loop>
+        <!-- Replace with your actual MP3 file -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const music = document.getElementById('bgMusic');
+            const musicControl = document.getElementById('musicControl');
+            const nameInput = document.getElementById('nameInput');
+            const submitName = document.getElementById('submitName');
+            const viewerDisplay = document.getElementById('viewerDisplay');
+            const viewerName = document.getElementById('viewerName');
+            const whatsappShare = document.getElementById('whatsappShare');
+            const facebookShare = document.getElementById('facebookShare');
+            const fairyLightsContainer = document.getElementById('fairyLightsContainer');
+            
+            let isPlaying = false;
+            
+            // Create fairy lights
+            function createFairyLights() {
+                const colors = ['#ffcc00', '#ff6666', '#66ccff', '#99ff99', '#ff99ff'];
+                for (let i = 0; i < 30; i++) {
+                    const light = document.createElement('div');
+                    light.className = 'fairy-light';
+                    light.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    light.style.left = `${Math.random() * 100}vw`;
+                    light.style.top = `${Math.random() * 100}vh`;
+                    light.style.animationDelay = `${Math.random() * 2}s`;
+                    fairyLightsContainer.appendChild(light);
+                }
+            }
+            
+            createFairyLights();
+            
+            // Check URL for name parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const nameParam = urlParams.get('name');
+            
+            if (nameParam) {
+                viewerName.textContent = decodeURIComponent(nameParam);
+                viewerDisplay.style.display = 'block';
+            }
+            
+            // Music control
+            musicControl.addEventListener('click', function() {
+                if (isPlaying) {
+                    music.pause();
+                    musicControl.querySelector('.music-icon').textContent = '♪';
+                } else {
+                    music.play();
+                    musicControl.querySelector('.music-icon').textContent = '♫';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // Name submission
+            submitName.addEventListener('click', function() {
+                const name = nameInput.value.trim();
+                if (name) {
+                    viewerName.textContent = name;
+                    viewerDisplay.style.display = 'block';
+                    
+                    // Update URL with name parameter
+                    const newUrl = window.location.origin + window.location.pathname + '?name=' + encodeURIComponent(name);
+                    window.history.pushState({ path: newUrl }, '', newUrl);
+                }
+            });
+            
+            // Share buttons
+            whatsappShare.addEventListener('click', function(e) {
+                e.preventDefault();
+                const name = nameInput.value.trim() || viewerName.textContent;
+                const text = name ? `${name} wants to share this special photo with you!` : 'Check out this special photo!';
+                const url = window.location.href;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+            });
+            
+            facebookShare.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = window.location.href;
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+            });
+            
+            // Handle image error
+            const photo = document.querySelector('.photo');
+            photo.onerror = function() {
+                photo.style.display = 'none';
+                document.querySelector('.placeholder').style.display = 'flex';
+            };
+        });
+    </script>
+</body>
+</html>
